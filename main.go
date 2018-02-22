@@ -6,6 +6,7 @@ import (
 )
 
 func main() {
+	log.Println("Starting....")
 	router:=NewRouter()
     log.Fatal(http.ListenAndServe(":8000", router))
 }
