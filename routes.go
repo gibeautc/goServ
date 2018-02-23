@@ -35,6 +35,12 @@ func NewRouter() *mux.Router {
 
 var routes = Routes{
     Route{
+        "IndexPost",
+        "POST",
+        "/",
+        IndexPost,
+    },
+    Route{
         "Index",
         "GET",
         "/",
@@ -49,7 +55,7 @@ var routes = Routes{
     Route{
         "PostOfficeTemp",
         "POST",
-        "/officeTemp/{}",
+        "/officeTemp/",
         ReportOfficeTemp,
     },
 }
