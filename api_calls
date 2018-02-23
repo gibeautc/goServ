@@ -1,0 +1,9 @@
+
+This should work for system status but it is not at the moment
+curl -H "Content-Type: application/json" -d '{"id":1,"value":30}' http://localhost:8000/systemstatus/
+
+
+
+Post Office temp,   should office temp be renamed as temp or report temp since I have a location entry in json, can be generic
+curl -H "Content-Type: application/json" -d '{"location":"office","value":30}' http://localhost:8000/officeTemp/
+

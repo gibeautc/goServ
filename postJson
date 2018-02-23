@@ -1,0 +1,8 @@
+#!/bin/bash
+
+#-H "Content-Type: application/json" \
+
+curl -i \
+    -H "Content-Type: application/json" \
+    -X POST -d '{"value":"66","location":"office"}' \
+    http://localhost:8000/officeTemp/
