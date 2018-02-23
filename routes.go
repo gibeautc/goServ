@@ -58,4 +58,16 @@ var routes = Routes{
         "/officeTemp/",
         ReportOfficeTemp,
     },
+    Route{
+        "PostSystemStatus",
+        "POST",
+        "/systemstatus/",
+        ReportSystemStatus,
+    },
+    Route{
+        "GetSystemStatus",
+        "GET",
+        "/systemstatus/",
+        GetSystemStatus,
+    },
 }
