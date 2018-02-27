@@ -49,14 +49,14 @@ var routes = Routes{
     Route{
         "GetOfficeTemp",
         "GET",
-        "/officeTemp",
-        GetOfficeTemp,
+        "/getTemp",
+        GetTemp,
     },
     Route{
         "PostOfficeTemp",
         "POST",
-        "/officeTemp/",
-        ReportOfficeTemp,
+        "/reportTemp/",
+        ReportTemp,
     },
     Route{
         "PostSystemStatus",
@@ -69,5 +69,17 @@ var routes = Routes{
         "GET",
         "/systemstatus/",
         GetSystemStatus,
+    },
+    Route{
+        "GM Call Back",
+        "POST",//I think it will be a post coming from gm api
+        "/gmcallback/",
+        GmMsgReceived,
+    },
+    Route{
+        "Send GM Message",
+        "POST",//I think it will be a post coming from gm api
+        "/gmSend/",
+        GmMsgSend,
     },
 }

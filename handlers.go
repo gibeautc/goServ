@@ -4,27 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	//"github.com/gorilla/mux"
 	"log"
-	"github.com/gorilla/mux"
 	"time"
-	"strconv"
 )
 
 
-
-	//report outside temp (Home)
-    //get outside Temp (Home)
-    //report Hsink Temp
-    //get Hsink Temp
-    //Report Node Status
-    //Get Node Status
-    //report 
-    //Receive GM Message
-    //Send GM Message
     //RX SatCom msg
     //Tx SatCom Msg
-
+	//Get current weather report (current hour,day?) based on location
 
 
 
@@ -34,69 +21,76 @@ func Index(w http.ResponseWriter, r *http.Request) {
 }
 
 func IndexPost(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w,"Welcome to the API, you cannot POST to INDEX")
+	var apiRes ApiResponse
+	apiRes.Success=false
+	apiRes.Message="ERROR: Cannot Post to index"
+	_=json.NewDecoder(r.Body).Decode(&apiRes)
+	json.NewEncoder(w).Encode(apiRes)
 
 }
 
-func GetOfficeTemp(w http.ResponseWriter, r *http.Request) {
+func GetTemp(w http.ResponseWriter, r *http.Request) {
+	//fixme: need to look at what location is being requested
 	var tmp TReport
-	tmp.Location="Office"
+	tmp.Location="office"
 	tmp.Value=65.3
 	json.NewEncoder(w).Encode(tmp)
 	}
-func ReportOfficeTemp(w http.ResponseWriter, r *http.Request) {
-	log.Println(w,"Receiving Office Temp Report")
-	vars:=mux.Vars(r)
-	log.Println("Body Received")
-	log.Println(r.Body)
-	var tmp TReport
+func ReportTemp(w http.ResponseWriter, r *http.Request) {
+	var err error
 	var apiRes ApiResponse
-	tmp.Location=vars["location"]
-	tmp.Value,_=strconv.ParseFloat(vars["value"],64)
-	tmp.TimeStamp=time.Now()
+	var vars TReport
 	apiRes.Success=true
+
+	log.Println(w,"Receiving Temp Report")
+	decoder:=json.NewDecoder(r.Body)
+
+	err=decoder.Decode(&vars)
+	if err!=nil{
+		log.Println("Error Parsing JSON")
+		log.Println(err.Error())
+		apiRes.Success=false
+		apiRes.Message="Failed to parse json"
+	}
+
+	log.Println(vars.Location)
+	log.Println(vars.Value)
+	vars.TimeStamp=time.Now()
+
 	_=json.NewDecoder(r.Body).Decode(&apiRes)
 	json.NewEncoder(w).Encode(apiRes)
 }
 
 func ReportSystemStatus(w http.ResponseWriter, r *http.Request) {
-	log.Println(w,"Receiving Office Temp Report")
-	vars:=mux.Vars(r)
-	var tmp SystemStatus
+	var err error
+	var vars SystemStatus
 	var apiRes ApiResponse
 	apiRes.Success=true //unless we have a reason to set it false
-	t,err:=strconv.ParseInt(vars["id"],10,16)
+
+	log.Println(w,"Receiving System Status Report")
+
+	decoder:=json.NewDecoder(r.Body)
+	err=decoder.Decode(&vars)
 	if err!=nil{
-		log.Println("Error Getting ID- Required")
+		log.Println("Error Parsing JSON")
 		log.Println(err.Error())
-		log.Println(vars["id"])
-		apiRes.Message="ID ERROR"
 		apiRes.Success=false
-		_=json.NewDecoder(r.Body).Decode(&apiRes)
-		json.NewEncoder(w).Encode(apiRes)
-		return
+		apiRes.Message="Failed to parse json"
 	}
-	tmp.Id=int16(t)
-
-	tmp.Name=vars["name"]
-	if tmp.Name==""{
-		log.Println("Error Getting Name- Required")
-		log.Println(err.Error())
-		apiRes.Message="Name ERROR"
+	if vars.Id<1{
+		log.Println("Missing/Malformed ID")
 		apiRes.Success=false
-		_=json.NewDecoder(r.Body).Decode(&apiRes)
-		json.NewEncoder(w).Encode(apiRes)
-		return
+		apiRes.Message="ERROR: Missing/malfored ID"
 	}
 
-
-	t,err=strconv.ParseInt(vars["cpu_percent"],10,16)
-	if err!=nil{
-		log.Println("Error Getting CpuPercent")
-		log.Println(err.Error())
-		apiRes.Message=apiRes.Message+"| ERROR on CpuPercent"
-
+	if vars.Name==""{
+		log.Println("Missing/Malformed Name")
+		apiRes.Success=false
+		apiRes.Message="ERROR: Missing/malfored Name"
 	}
+
+	vars.printStruct()
+
 	_=json.NewDecoder(r.Body).Decode(&apiRes)
 	json.NewEncoder(w).Encode(apiRes)
 	return
@@ -111,3 +105,27 @@ func GetSystemStatus(w http.ResponseWriter, r *http.Request){
 	json.NewEncoder(w).Encode(apiRes)
 	return
 }
+
+
+func GmMsgReceived(w http.ResponseWriter,r *http.Request){
+	log.Println("Requesting Server System Status")
+	var apiRes ApiResponse
+	apiRes.Message="Write ME!"
+	apiRes.Success=false
+	_=json.NewDecoder(r.Body).Decode(&apiRes)
+	json.NewEncoder(w).Encode(apiRes)
+	return
+}
+
+
+func GmMsgSend(w http.ResponseWriter,r *http.Request){
+	log.Println("Requesting Server System Status")
+	var apiRes ApiResponse
+	apiRes.Message="Write ME!"
+	apiRes.Success=false
+	_=json.NewDecoder(r.Body).Decode(&apiRes)
+	json.NewEncoder(w).Encode(apiRes)
+	return
+}
+
+
