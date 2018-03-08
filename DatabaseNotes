@@ -1,0 +1,50 @@
+
+
+locations table
+
+id auto int
+name string
+lat decimal(9,6)
+lon decimal(9,6)
+lastUpdate datetime
+freq int
+service int
+
+
+freq(int)
+
+0, not checking any more
+1, check once (then change to 0)
+2, Standard    (hourly probably
+
+
+
+service(int) Bit Mask
+1, Weather Hourly, Daily, Alert
+2, River data
+
+
+
+
+
+
+
+Weather Current
+id              int  auto
+locId           int
+recTime         datetime
+summary         varchar(50)
+precipInt       float(4,3)
+precipProb      float(4,3)
+precipType      varchar(5)
+temp            smallint
+pressure        float(5,1)
+pressureTrend   char(1)
+windSpeed       tinyint
+windGust        tinyint
+windDir         smallint
+stormDist       smallint
+stormDir        smallint
+sky             tinyint
+visibility      tinyint
+

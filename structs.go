@@ -3,7 +3,30 @@ package main
 import (
 	"time"
 	"log"
+	"database/sql"
 )
+
+type App struct{
+	db *db
+}
+
+type Daemon struct{
+	db *db
+}
+
+type db struct{
+	db *sql.DB
+}
+
+type location struct{
+	Id int
+	Lat float32
+	Lon	float32
+	Name string
+	LastUpdate time.Time
+	Freq int
+	Service int
+}
 
 type TReport struct{
 	Location string `json:"location"`
@@ -11,6 +34,10 @@ type TReport struct{
 	Value float64 `json:"value"`
 }
 
+type SatReport struct{
+	Lat float32 `json:"lat"`
+	Lon float32 `json:"lon"`
+}
 
 type ApiResponse struct{
 	Success bool `json:"success"`
@@ -30,6 +57,31 @@ type SystemStatus struct{
 	Processes map[string]bool `json:"processes"`
 	//this is a list of processes that system is watching, and their status
 	TimeStamp time.Time `json:"timestamp"`
+}
+
+
+type HourWeather struct{
+	Hour int `json:"hour"`
+	Temp int `json:"temp"`
+	Wind int `json:"wind"`
+	Sky int `json:"sky"`
+	Precip int `json:"precip"`
+}
+
+type DayWeather struct{
+	Day int `json:"day"`
+	High int `json:"high"`
+	Low int `json:"high"`
+	Wind int `json:"wind"`
+	Sky int `json:"sky"`
+	Precip int `json:"precip"`
+	RiseTime time.Time `json:"rise_time"`
+	SetTime time.Time `json:"set_time"`
+}
+
+type WxReport struct{
+	Hourly []*HourWeather `json:"hourly"`
+	Dayily []*DayWeather  `json:"daily"`
 }
 
 func (self SystemStatus) printStruct(){

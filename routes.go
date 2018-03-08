@@ -82,4 +82,11 @@ var routes = Routes{
         "/gmSend/",
         GmMsgSend,
     },
+    //all /sat/ functions are for SatCom Box
+    Route{
+        "Sat WX request",
+        "POST",
+        "/sat/wx",
+        SatWx,
+    },
 }

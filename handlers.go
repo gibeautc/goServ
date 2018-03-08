@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"log"
 	"time"
+	"github.com/shawntoffel/darksky"
 )
 
 
@@ -128,4 +129,38 @@ func GmMsgSend(w http.ResponseWriter,r *http.Request){
 	return
 }
 
-
+func SatWx(w http.ResponseWriter,r *http.Request){
+	app:=new(App)
+	app.db=ConnectToDB()
+	log.Println("SatCom Box WX Request")
+	decoder:=json.NewDecoder(r.Body)
+	var t SatReport
+	err:=decoder.Decode(&t)
+	if err!=nil{
+		log.Println(err.Error())
+		return
+	}
+	log.Println("Lat: ",t.Lat)
+	log.Println("Lon: ",t.Lon)
+	client := darksky.New("304e4f1db901c61cf8cb2b6d9be6237a")
+	request := darksky.ForecastRequest{}
+	request.Latitude = darksky.Measurement(t.Lat)
+	request.Longitude = darksky.Measurement(t.Lon)
+	request.Options = darksky.ForecastRequestOptions{Exclude: "minutely"}
+	forecast, err := client.Forecast(request)
+	if err!=nil{
+		log.Println(err.Error())
+		return
+	}
+	for x:=0;x<len(forecast.Alerts);x++{
+		log.Println(forecast.Alerts[x].Description)
+	}
+	report,err:=processForecast(forecast)
+	if err!=nil{
+		log.Println(err.Error())
+		return
+	}
+	//this is where the response it written out
+	json.NewEncoder(w).Encode(report)
+	return
+}
