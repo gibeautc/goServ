@@ -12,7 +12,7 @@ func main() {
 	log.Println("Starting....")
 	go daemon()
 	router:=NewRouter()
-    log.Fatal(http.ListenAndServe(":5000", router))
+    log.Fatal(http.ListenAndServe(":4000", router))
 }
 
 
