@@ -71,12 +71,12 @@ type HourWeather struct{
 type DayWeather struct{
 	Day int `json:"day"`
 	High int `json:"high"`
-	Low int `json:"high"`
+	Low int `json:"low"`
 	Wind int `json:"wind"`
 	Sky int `json:"sky"`
 	Precip int `json:"precip"`
-	RiseTime time.Time `json:"rise_time"`
-	SetTime time.Time `json:"set_time"`
+	RiseTime int64 `json:"rise_time"`
+	SetTime int64 `json:"set_time"`
 }
 
 type WxReport struct{
