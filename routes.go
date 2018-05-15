@@ -47,46 +47,16 @@ var routes = Routes{
         Index,
     },
     Route{
-        "GetOfficeTemp",
-        "GET",
-        "/getTemp",
-        GetTemp,
-    },
-    Route{
-        "PostOfficeTemp",
-        "POST",
-        "/reportTemp/",
-        ReportTemp,
-    },
-    Route{
-        "PostSystemStatus",
-        "POST",
-        "/systemstatus/",
-        ReportSystemStatus,
-    },
-    Route{
-        "GetSystemStatus",
-        "GET",
-        "/systemstatus/",
-        GetSystemStatus,
-    },
-    Route{
-        "GM Call Back",
+        "GM Message",
         "POST",//I think it will be a post coming from gm api
-        "/gmcallback/",
-        GmMsgReceived,
-    },
-    Route{
-        "Send GM Message",
-        "POST",//I think it will be a post coming from gm api
-        "/gmSend/",
-        GmMsgSend,
+        "/sat/gm",
+        GmMsg,
     },
     //all /sat/ functions are for SatCom Box
     Route{
-        "Sat WX request",
+        "Sat Msg RX",
         "POST",
-        "/sat/wx",
-        SatWx,
+        "/sat/sat",
+        SatMsg,
     },
 }

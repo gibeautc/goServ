@@ -5,15 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"log"
-	"time"
-	"github.com/shawntoffel/darksky"
 )
-
-
-    //RX SatCom msg
-    //Tx SatCom Msg
-	//Get current weather report (current hour,day?) based on location
-
 
 
 func Index(w http.ResponseWriter, r *http.Request) {
@@ -30,74 +22,9 @@ func IndexPost(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func GetTemp(w http.ResponseWriter, r *http.Request) {
-	//fixme: need to look at what location is being requested
-	var tmp TReport
-	tmp.Location="office"
-	tmp.Value=65.3
-	json.NewEncoder(w).Encode(tmp)
-	}
-func ReportTemp(w http.ResponseWriter, r *http.Request) {
-	var err error
-	var apiRes ApiResponse
-	var vars TReport
-	apiRes.Success=true
 
-	log.Println(w,"Receiving Temp Report")
-	decoder:=json.NewDecoder(r.Body)
 
-	err=decoder.Decode(&vars)
-	if err!=nil{
-		log.Println("Error Parsing JSON")
-		log.Println(err.Error())
-		apiRes.Success=false
-		apiRes.Message="Failed to parse json"
-	}
-
-	log.Println(vars.Location)
-	log.Println(vars.Value)
-	vars.TimeStamp=time.Now()
-
-	_=json.NewDecoder(r.Body).Decode(&apiRes)
-	json.NewEncoder(w).Encode(apiRes)
-}
-
-func ReportSystemStatus(w http.ResponseWriter, r *http.Request) {
-	var err error
-	var vars SystemStatus
-	var apiRes ApiResponse
-	apiRes.Success=true //unless we have a reason to set it false
-
-	log.Println(w,"Receiving System Status Report")
-
-	decoder:=json.NewDecoder(r.Body)
-	err=decoder.Decode(&vars)
-	if err!=nil{
-		log.Println("Error Parsing JSON")
-		log.Println(err.Error())
-		apiRes.Success=false
-		apiRes.Message="Failed to parse json"
-	}
-	if vars.Id<1{
-		log.Println("Missing/Malformed ID")
-		apiRes.Success=false
-		apiRes.Message="ERROR: Missing/malfored ID"
-	}
-
-	if vars.Name==""{
-		log.Println("Missing/Malformed Name")
-		apiRes.Success=false
-		apiRes.Message="ERROR: Missing/malfored Name"
-	}
-
-	vars.printStruct()
-
-	_=json.NewDecoder(r.Body).Decode(&apiRes)
-	json.NewEncoder(w).Encode(apiRes)
-	return
-}
-
-func GetSystemStatus(w http.ResponseWriter, r *http.Request){
+func GmMsg(w http.ResponseWriter,r *http.Request){
 	log.Println("Requesting Server System Status")
 	var apiRes ApiResponse
 	apiRes.Message="Write ME!"
@@ -107,60 +34,74 @@ func GetSystemStatus(w http.ResponseWriter, r *http.Request){
 	return
 }
 
+func SatMsg(w http.ResponseWriter,r *http.Request){
+	/*
+	This will be the message from the satBox, so it will be
+	lat		4
+	lon		4
+	bat		1
+	status	1
 
-func GmMsgReceived(w http.ResponseWriter,r *http.Request){
-	log.Println("Requesting Server System Status")
-	var apiRes ApiResponse
-	apiRes.Message="Write ME!"
-	apiRes.Success=false
-	_=json.NewDecoder(r.Body).Decode(&apiRes)
-	json.NewEncoder(w).Encode(apiRes)
-	return
-}
+	status bits
+	0    	Set=moving
+	1
+	2
+	3
+	4
+	5
+	6
+	7
 
 
-func GmMsgSend(w http.ResponseWriter,r *http.Request){
-	log.Println("Requesting Server System Status")
-	var apiRes ApiResponse
-	apiRes.Message="Write ME!"
-	apiRes.Success=false
-	_=json.NewDecoder(r.Body).Decode(&apiRes)
-	json.NewEncoder(w).Encode(apiRes)
-	return
-}
+	Minimum of 10 bytes, then anything after 10, would be an ascii encoded message
 
-func SatWx(w http.ResponseWriter,r *http.Request){
+	*/
+	//data:=make([]byte,0)
 	app:=new(App)
 	app.db=ConnectToDB()
-	log.Println("SatCom Box WX Request")
-	decoder:=json.NewDecoder(r.Body)
-	var t SatReport
-	err:=decoder.Decode(&t)
-	if err!=nil{
-		log.Println(err.Error())
+	log.Println("SatCom Box Update")
+
+	if r.ContentLength<10{
+		log.Println("Message from SatCom too short")
 		return
 	}
-	log.Println("Lat: ",t.Lat)
-	log.Println("Lon: ",t.Lon)
-	client := darksky.New("304e4f1db901c61cf8cb2b6d9be6237a")
-	request := darksky.ForecastRequest{}
-	request.Latitude = darksky.Measurement(t.Lat)
-	request.Longitude = darksky.Measurement(t.Lon)
-	request.Options = darksky.ForecastRequestOptions{Exclude: "minutely"}
-	forecast, err := client.Forecast(request)
-	if err!=nil{
-		log.Println(err.Error())
-		return
-	}
-	for x:=0;x<len(forecast.Alerts);x++{
-		log.Println(forecast.Alerts[x].Description)
-	}
-	report,err:=processForecast(forecast)
-	if err!=nil{
-		log.Println(err.Error())
-		return
-	}
-	//this is where the response it written out
-	json.NewEncoder(w).Encode(report)
-	return
+
+
+
+
+	//log.Println("Lat: ",t.Lat)
+	//log.Println("Lon: ",t.Lon)
+	//client := darksky.New("304e4f1db901c61cf8cb2b6d9be6237a")
+	//request := darksky.ForecastRequest{}
+	//request.Latitude = darksky.Measurement(t.Lat)
+	//request.Longitude = darksky.Measurement(t.Lon)
+	//request.Options = darksky.ForecastRequestOptions{Exclude: "minutely"}
+	//forecast, err := client.Forecast(request)
+	//if err!=nil{
+	//	log.Println(err.Error())
+	//	return
+	//}
+	//for x:=0;x<len(forecast.Alerts);x++{
+	//	log.Println(forecast.Alerts[x].Description)
+	//}
+	//report,err:=processForecast(forecast)
+	//if err!=nil{
+	//	log.Println(err.Error())
+	//	return
+	//}
+	////this is where the response it written out
+	//json.NewEncoder(w).Encode(report)
+	//return
+
+
+
+	//python stuff from last time
+	//data=request.form['data']
+	//data=data.decode('hex')
+	//momsn=request.form['momsn']
+	//transmit_time=request.form['transmit_time']
+	//iridium_lat=request.form['iridium_latitude']
+	//iridium_lon=request.form['iridium_longitude']
+	//ir_cep=request.form['iridium_cep']
+
 }

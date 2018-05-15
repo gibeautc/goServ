@@ -9,10 +9,19 @@ import (
 func main() {
 
 	//Get Port number as argument or config file?
-	log.Println("Starting....")
+	log.Println("Starting SatComServer....")
 	go daemon()
 	router:=NewRouter()
-    log.Fatal(http.ListenAndServe(":4000", router))
+	err:=sendGMMsg("Server Startup")
+	if err!=nil{
+		log.Println(err.Error())
+	}
+	err=sendSatMsg([]byte("Server Startup"))
+	if err!=nil{
+		log.Println(err.Error())
+	}
+
+	log.Fatal(http.ListenAndServe(":9090", router))
 }
 
 
