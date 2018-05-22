@@ -9,7 +9,6 @@ import (
 	"log"
 	"errors"
 	"math"
-	"encoding/hex"
 	"io/ioutil"
 )
 
@@ -45,7 +44,8 @@ func sendSatMsg(msg []byte) error {
 	//curl -d '{"text" : "Your message here", "bot_id" : "b3e83fd81cfbe44a7ea8a22030"}' https://api.groupme.com/v3/bots/post
 	url := "https://core.rock7.com/rockblock/MT"
 	log.Println("URL:>", url)
-	var jsonStr = []byte(`{"data":"`+hex.Dump(msg)+`","imei":"300234064380130","username":"gibeautc@oregonstate.edu","password":"myvice12"}`)
+	var jsonStr = []byte(`{"data":"`+"11111111"+`","imei":"300234064380130","username":"gibeautc@oregonstate.edu","password":"myvice12"}`)
+	//var jsonStr = []byte(`{"data":"`+hex.Dump(msg)+`","imei":"300234064380130","username":"gibeautc@oregonstate.edu","password":"myvice12"}`)
 	log.Println("Trying to send:",string(jsonStr))
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
 	//req.Header.Set("X-Custom-Header", "myvalue")
